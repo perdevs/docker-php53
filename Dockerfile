@@ -71,6 +71,8 @@ RUN set -x \
 	&& apt-get purge -y --auto-remove autoconf2.13 \
   && make clean
 
+COPY docker-php-ext-* /usr/local/bin/
+
 COPY docker-php-* /usr/local/bin/
 COPY apache2-foreground /usr/local/bin/
 
