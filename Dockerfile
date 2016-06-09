@@ -1,7 +1,7 @@
 FROM buildpack-deps:jessie
 MAINTAINER Sebastian Bravo <akira.1988.otomo@gmail.com>
 
-RUN apt-get update && apt-get install -y curl && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl zlib1g-dev && rm -r /var/lib/apt/lists/*
 
 ##<apache2>##
 RUN apt-get update && apt-get install -y apache2-bin apache2-dev apache2.2-common --no-install-recommends && rm -rf /var/lib/apt/lists/*
@@ -65,6 +65,7 @@ RUN set -x \
 		--with-mysqli \
 		--with-pdo-mysql \
 		--with-openssl=/usr/local/ssl \
+		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& dpkg -r bison libbison-dev \
@@ -72,9 +73,10 @@ RUN set -x \
   && make clean
 
 COPY docker-php-ext-* /usr/local/bin/
-
-COPY docker-php-* /usr/local/bin/
 COPY apache2-foreground /usr/local/bin/
+
+RUN chmod u+x /usr/local/bin/apache2-foreground
+RUN chmod u+x /usr/local/bin/docker-php-ext-*
 
 WORKDIR /var/www/html
 
